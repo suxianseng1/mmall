@@ -198,6 +198,10 @@ public class UserServiceImpl implements IUserService {
      */
     @Override
     public ServerResponse<String> updataUserInfo(User user) {
+        int checkEmail = userMapper.checkEmailByUserId(user.getEmail(),user.getId());
+        if(checkEmail >0){
+            return ServerResponse.createByError("该Email已存在，请更换Email再重试更新");
+        }
         int result = userMapper.updateByPrimaryKeySelective(user);
         if (result > 0) {
             return ServerResponse.createBySuccess("更新个人信息成功");

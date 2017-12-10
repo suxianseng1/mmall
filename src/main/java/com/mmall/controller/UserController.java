@@ -1,6 +1,7 @@
 package com.mmall.controller;
 
 import com.mmall.common.Const;
+import com.mmall.common.ResponseCode;
 import com.mmall.common.ServerResponse;
 import com.mmall.pojo.User;
 import com.mmall.service.IUserService;
@@ -45,7 +46,7 @@ public class UserController {
      * @param session
      * @return
      */
-    @RequestMapping(value="loginout.do",method = RequestMethod.GET)
+    @RequestMapping(value="loginout.do",method = RequestMethod.POST)
     @ResponseBody
     private ServerResponse<String> loginOut(HttpSession session){
         try {
@@ -74,7 +75,7 @@ public class UserController {
      * @param type
      * @return
      */
-    @RequestMapping(value="register.do",method = RequestMethod.GET)
+    @RequestMapping(value="check_valid.do",method = RequestMethod.POST)
     @ResponseBody
     private ServerResponse<String> checkValid(String str,String type){
         return userService.checkValid(str,type);
@@ -91,7 +92,7 @@ public class UserController {
         Object obj = session.getAttribute(Const.CURRENT_USER);
         User user = null;
         if(obj == null){
-            return ServerResponse.createByError("用户未登录,无法获取当前用户信息");
+            return ServerResponse.createByError(ResponseCode.NEED_LOGIN.getCode(),"用户未登录,无法获取当前用户信息");
         }
         user = (User)obj;
         return ServerResponse.createBySuccess(user);
@@ -102,7 +103,7 @@ public class UserController {
      * @param username
      * @return
      */
-    @RequestMapping(value="forget_get_question.do",method = RequestMethod.GET)
+    @RequestMapping(value="forget_get_question.do",method = RequestMethod.POST)
     @ResponseBody
     private ServerResponse<String> forgetGetQuestion(String username){
         return userService.forgetGetQuestion(username);
@@ -115,7 +116,7 @@ public class UserController {
      * @param question
      * @return
      */
-    @RequestMapping(value="forget_check_answer.do",method = RequestMethod.GET)
+    @RequestMapping(value="forget_check_answer.do",method = RequestMethod.POST)
     @ResponseBody
     private ServerResponse<String> forgetCheckAnswer(String username,String answer,String question){
         return userService.forgetCheckAnswer(username,answer,question);
@@ -128,7 +129,7 @@ public class UserController {
      * @param forgetToken
      * @return
      */
-    @RequestMapping(value="forget_reset_password.do",method = RequestMethod.GET)
+    @RequestMapping(value="forget_reset_password.do",method = RequestMethod.POST)
     @ResponseBody
     private ServerResponse<String> forgetResetPassword(String username,String passwordNew,String forgetToken){
         return userService.forgetResetPassword(username, passwordNew, forgetToken);
@@ -141,7 +142,7 @@ public class UserController {
      * @param session
      * @return
      */
-    @RequestMapping(value="reset_password.do",method = RequestMethod.GET)
+    @RequestMapping(value="reset_password.do",method = RequestMethod.POST)
     @ResponseBody
     private ServerResponse<String> resetPassword(String passwordOld,String passwordNew,HttpSession session){
         Object obj = session.getAttribute(Const.CURRENT_USER);
@@ -158,7 +159,7 @@ public class UserController {
      * @param user
      * @return
      */
-    @RequestMapping(value="update_information.do",method = RequestMethod.GET)
+    @RequestMapping(value="update_information.do",method = RequestMethod.POST)
     @ResponseBody
     private ServerResponse<String> updateInformation(HttpSession session,User user){
         Object obj = session.getAttribute(Const.CURRENT_USER);
@@ -167,6 +168,10 @@ public class UserController {
         }
         // 从Session中获取的用户ID设置到更新的User中
         user.setId(((User)obj).getId());
-        return userService.updataUserInfo(user);
+        ServerResponse<String> serverResponse = userService.updataUserInfo(user);
+        if(serverResponse.isSuccess()){
+            session.setAttribute(Const.CURRENT_USER,user);
+        }
+        return serverResponse;
     }
 }

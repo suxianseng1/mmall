@@ -33,4 +33,6 @@ public interface UserMapper {
     int resetPassword(@Param("username") String username, @Param("password") String passwordNew);
 
     int updatePassword(@Param("username") String username,@Param("passwordOld")String passwordOld, @Param("passwordNew") String passwordNew);
+
+    int checkEmailByUserId(@Param("email")String email,@Param("userId")int userId);
 }

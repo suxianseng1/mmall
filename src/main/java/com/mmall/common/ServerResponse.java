@@ -1,11 +1,15 @@
 package com.mmall.common;
 
 import org.codehaus.jackson.annotate.JsonIgnore;
+import org.codehaus.jackson.map.annotate.JsonSerialize;
+
+import java.io.Serializable;
 
 /**
  * Created by SMY on 2017/12/8.
  */
-public class ServerResponse<T> {
+@JsonSerialize(include =  JsonSerialize.Inclusion.NON_NULL)
+public class ServerResponse<T> implements Serializable {
     private int status;
     private String msg;
     private T data;

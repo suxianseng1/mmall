@@ -153,4 +153,8 @@
     <update id="updatePassword">
         UPDATE  mmall_user SET password=#{passwordNew},updata_time=now() WHERE username=#{username} AND password=#{passwordOld}
     </update>
+
+    <select id="checkEmailByUserId" parameterType="map" resultType="int">
+        SELECT COUNT(1) FROM mmall_user WHERE  email=#{email} AND id != #{userId}
+    </select>
 </mapper>
