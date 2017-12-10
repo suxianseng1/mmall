@@ -30,12 +30,12 @@ public class UserManageController {
         if(serverResponse.isSuccess()){
             session.setAttribute(Const.CURRENT_USER,serverResponse.getData());
             if(user.getRole()== Const.Role.ROLE_ADMIN){
-                return ServerResponse.createBySuccess(user);
+                return ServerResponse.createBySuccess("登陆成功",user);
             } else {
-                return ServerResponse.createByError("用户没有权限进入");
+                return ServerResponse.createByErrorMessage("用户没有权限进入");
             }
         } else {
-            return ServerResponse.createByError("账号或者密码错误");
+            return ServerResponse.createByErrorMessage("账号或者密码错误");
         }
     }
 }

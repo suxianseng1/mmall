@@ -28,7 +28,7 @@ public class ShippingController {
     private ServerResponse<Integer> addShipping(Shipping shipping, HttpSession session) {
         Object obj = session.getAttribute(Const.CURRENT_USER);
         if (obj == null) {
-            return ServerResponse.createByError("用户未登录");
+            return ServerResponse.createByErrorMessage("用户未登录");
         }
         int id = ((User) obj).getId();
         shipping.setUserId(id);
@@ -52,7 +52,7 @@ public class ShippingController {
     private ServerResponse<Shipping> viewShipping(Integer shippingId,HttpSession session){
         Object obj = session.getAttribute(Const.CURRENT_USER);
         if (obj == null) {
-            return ServerResponse.createByError("请登录之后查询");
+            return ServerResponse.createByErrorMessage("请登录之后查询");
         }
         return shippingService.viewShipping(shippingId);
     }

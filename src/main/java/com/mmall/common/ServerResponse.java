@@ -39,11 +39,11 @@ public class ServerResponse<T> implements Serializable {
         return msg;
     }
 
-    @JsonIgnore
     public T getData() {
         return data;
     }
 
+    @JsonIgnore
     public boolean isSuccess(){
         return this.status == ResponseCode.SUCCESS.getCode();
     }
@@ -52,21 +52,23 @@ public class ServerResponse<T> implements Serializable {
         return new ServerResponse<T>(ResponseCode.SUCCESS.getCode());
     }
 
-    public static <T> ServerResponse<T> createBySuccess(String msg){
+    public static <T> ServerResponse<T> createBySuccessMessage(String msg){
         return new ServerResponse<T>(ResponseCode.SUCCESS.getCode(),msg);
     }
-    public static <T> ServerResponse<T> createBySuccess(String msg,T data){
-        return new ServerResponse<T>(ResponseCode.SUCCESS.getCode(),data);
-    }
+
     public static <T> ServerResponse<T> createBySuccess(T data){
         return new ServerResponse<T>(ResponseCode.SUCCESS.getCode(),data);
+    }
+
+    public static <T> ServerResponse<T> createBySuccess(String msg,T data){
+        return new ServerResponse<T>(ResponseCode.SUCCESS.getCode(),msg,data);
     }
 
     public static <T> ServerResponse<T> createByError(){
         return new ServerResponse<T>(ResponseCode.ERROR.getCode());
     }
 
-    public static <T> ServerResponse<T> createByError(String errorMsg){
+    public static <T> ServerResponse<T> createByErrorMessage(String errorMsg){
         return new ServerResponse<T>(ResponseCode.ERROR.getCode(),errorMsg);
     }
 

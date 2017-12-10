@@ -31,20 +31,19 @@ public class UserServiceImpl implements IUserService {
      */
     @Override
     public ServerResponse<User> checkLogin(String username, String password) {
-        int result = userMapper.checkUsername(username);
-        if (result < 0) {
-            return ServerResponse.createByError("用户名不存在");
+        int resultCount = userMapper.checkUsername(username);
+        if(resultCount == 0 ){
+            return ServerResponse.createByErrorMessage("用户名不存在");
         }
-        //将密码进行MD5加密后再进行数据库查询
-        password = MD5Util.MD5EncodeUtf8(password);
-        User user = userMapper.selectLogin(username, password);
-        if (user == null) {
-            return ServerResponse.createByError("密码错误");
-        }
-        user.setPassword(null);
-        return ServerResponse.createBySuccess("登录成功", user);
-    }
 
+        String md5Password = MD5Util.MD5EncodeUtf8(password);
+        User user  = userMapper.selectLogin(username,md5Password);
+        if(user == null){
+            return ServerResponse.createByErrorMessage("密码错误");
+        }
+        user.setPassword(org.apache.commons.lang3.StringUtils.EMPTY);
+        return ServerResponse.createBySuccess("登录成功",user);
+    }
     /**
      * 用户注册
      *
@@ -56,12 +55,12 @@ public class UserServiceImpl implements IUserService {
         //检查用户名是否已经存在,保证用户名唯一
         ServerResponse checkUsernameValid = this.checkValid(user.getUsername(), Const.USERNAME);
         if (!checkUsernameValid.isSuccess()) {
-            return ServerResponse.createByError("该用户已存在");
+            return ServerResponse.createByErrorMessage("该用户已存在");
         }
         //检查Email是否存在
         ServerResponse checkEmailValid = this.checkValid(user.getEmail(), Const.EMAIL);
         if (!checkEmailValid.isSuccess()) {
-            return ServerResponse.createByError("Email已被使用");
+            return ServerResponse.createByErrorMessage("Email已被使用");
         }
         //设置用户类型为普通用户
         user.setRole(Const.Role.ROLE_CUSTOMER);
@@ -70,9 +69,9 @@ public class UserServiceImpl implements IUserService {
         //执行插入
         int result = userMapper.insert(user);
         if (result > 0) {
-            return ServerResponse.createBySuccess("注册成功");
+            return ServerResponse.createBySuccessMessage("注册成功");
         }
-        return ServerResponse.createByError("注册失败");
+        return ServerResponse.createByErrorMessage("注册失败");
     }
 
     /**
@@ -86,14 +85,14 @@ public class UserServiceImpl implements IUserService {
         ServerResponse checkUsernameValid = this.checkValid(username, Const.USERNAME);
         if (checkUsernameValid.isSuccess()) {
             // 用户不存在
-            return ServerResponse.createByError("用户不存在");
+            return ServerResponse.createByErrorMessage("用户不存在");
         }
         // 查询用户问题
         String question = userMapper.forgetGetQuestion(username);
         if (StringUtils.isNotBlank(question)) {
-            return ServerResponse.createBySuccess(question);
+            return ServerResponse.createBySuccessMessage(question);
         }
-        return ServerResponse.createByError("该用户未设置找回密码问题");
+        return ServerResponse.createByErrorMessage("该用户未设置找回密码问题");
     }
 
     /**
@@ -110,18 +109,18 @@ public class UserServiceImpl implements IUserService {
             if (type.equals(Const.USERNAME)) {
                 result = userMapper.checkUsername(str);
                 if (result > 0) {
-                    return ServerResponse.createByError("该用户已存在");
+                    return ServerResponse.createByErrorMessage("该用户已存在");
                 }
             } else {
                 result = userMapper.checkUserEmail(str);
                 if (result > 0) {
-                    return ServerResponse.createByError("Email已被使用");
+                    return ServerResponse.createByErrorMessage("Email已被使用");
                 }
             }
         } else {
-            return ServerResponse.createByError("参数错误");
+            return ServerResponse.createByErrorMessage("参数错误");
         }
-        return ServerResponse.createBySuccess("校验成功");
+        return ServerResponse.createBySuccessMessage("校验成功");
     }
 
     /**
@@ -138,11 +137,11 @@ public class UserServiceImpl implements IUserService {
             if (result > 0) {
                 String token = UUID.randomUUID().toString();
                 TokenCache.put(TokenCache.TOKEN + username, token);
-                return ServerResponse.createBySuccess(token);
+                return ServerResponse.createBySuccessMessage(token);
             }
-            return ServerResponse.createByError("问题答案错误");
+            return ServerResponse.createByErrorMessage("问题答案错误");
         }
-        return ServerResponse.createByError("参数不能为空");
+        return ServerResponse.createByErrorMessage("参数不能为空");
     }
 
     /**
@@ -155,22 +154,22 @@ public class UserServiceImpl implements IUserService {
     @Override
     public ServerResponse<String> forgetResetPassword(String username, String passwordNew, String forgetToken) {
         if(StringUtils.isBlank(forgetToken)){
-            return ServerResponse.createByError("参数错误，Token需要传递");
+            return ServerResponse.createByErrorMessage("参数错误，Token需要传递");
         }
         ServerResponse checkUsernameValid = this.checkValid(username, Const.USERNAME);
         if (checkUsernameValid.isSuccess()) {
-            return ServerResponse.createByError("该用户不存在");
+            return ServerResponse.createByErrorMessage("该用户不存在");
         }
         String token = TokenCache.getToken(TokenCache.TOKEN + username);
         if (StringUtils.isNotBlank(token) && StringUtils.equals(forgetToken,token)) {
             int result = userMapper.resetPassword(username, passwordNew);
             if (result > 0) {
-                return ServerResponse.createBySuccess("修改密码成功");
+                return ServerResponse.createBySuccessMessage("修改密码成功");
             } else {
-                return ServerResponse.createByError("修改密码操作失效");
+                return ServerResponse.createByErrorMessage("修改密码操作失效");
             }
         }
-        return ServerResponse.createByError("token已经失效");
+        return ServerResponse.createByErrorMessage("token已经失效");
     }
 
     /**
@@ -186,9 +185,9 @@ public class UserServiceImpl implements IUserService {
         passwordNew = MD5Util.MD5EncodeUtf8(passwordNew);
         int result = userMapper.updatePassword(username, passwordOld, passwordNew);
         if (result > 0) {
-            return ServerResponse.createBySuccess("修改密码成功");
+            return ServerResponse.createBySuccessMessage("修改密码成功");
         }
-        return ServerResponse.createByError("旧密码输入错误");
+        return ServerResponse.createByErrorMessage("旧密码输入错误");
     }
 
     /**
@@ -200,12 +199,12 @@ public class UserServiceImpl implements IUserService {
     public ServerResponse<String> updataUserInfo(User user) {
         int checkEmail = userMapper.checkEmailByUserId(user.getEmail(),user.getId());
         if(checkEmail >0){
-            return ServerResponse.createByError("该Email已存在，请更换Email再重试更新");
+            return ServerResponse.createByErrorMessage("该Email已存在，请更换Email再重试更新");
         }
         int result = userMapper.updateByPrimaryKeySelective(user);
         if (result > 0) {
-            return ServerResponse.createBySuccess("更新个人信息成功");
+            return ServerResponse.createBySuccessMessage("更新个人信息成功");
         }
-        return ServerResponse.createByError("服务器内部错误");
+        return ServerResponse.createByErrorMessage("服务器内部错误");
     }
 }

@@ -51,10 +51,10 @@ public class UserController {
     private ServerResponse<String> loginOut(HttpSession session){
         try {
             session.removeAttribute(Const.CURRENT_USER);
-            return ServerResponse.createBySuccess("退出成功");
+            return ServerResponse.createBySuccessMessage("退出成功");
         } catch(Exception e){
             log.error(e.getMessage());
-            return ServerResponse.createByError("服务器异常");
+            return ServerResponse.createByErrorMessage("服务器异常");
         }
     }
 
@@ -92,7 +92,7 @@ public class UserController {
         Object obj = session.getAttribute(Const.CURRENT_USER);
         User user = null;
         if(obj == null){
-            return ServerResponse.createByError(ResponseCode.NEED_LOGIN.getCode(),"用户未登录,无法获取当前用户信息");
+            return ServerResponse.createByErrorCodeMessage(ResponseCode.NEED_LOGIN.getCode(),"用户未登录,无法获取当前用户信息");
         }
         user = (User)obj;
         return ServerResponse.createBySuccess(user);
@@ -147,7 +147,7 @@ public class UserController {
     private ServerResponse<String> resetPassword(String passwordOld,String passwordNew,HttpSession session){
         Object obj = session.getAttribute(Const.CURRENT_USER);
         if(obj == null){
-            return ServerResponse.createByError("用户还未登录");
+            return ServerResponse.createByErrorMessage("用户还未登录");
         }
         User user = (User)obj;
         return userService.resetPassword(user.getUsername(),passwordOld,passwordNew);
@@ -164,7 +164,7 @@ public class UserController {
     private ServerResponse<String> updateInformation(HttpSession session,User user){
         Object obj = session.getAttribute(Const.CURRENT_USER);
         if(obj == null){
-            return ServerResponse.createByError("用户未登录");
+            return ServerResponse.createByErrorMessage("用户未登录");
         }
         // 从Session中获取的用户ID设置到更新的User中
         user.setId(((User)obj).getId());

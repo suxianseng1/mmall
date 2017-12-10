@@ -21,23 +21,23 @@ public class ShippingServiceImpl implements IShippingService {
        if(id >0 ){
            return ServerResponse.createBySuccess("新建地址成功",id);
        }
-       return ServerResponse.createByError("新建地址失败");
+       return ServerResponse.createByErrorMessage("新建地址失败");
     }
 
     public ServerResponse<String> delShipping(int shippingId){
         int result = shippingMapper.deleteByPrimaryKey(shippingId);
         if(result > 0){
-            return ServerResponse.createBySuccess("删除地址成功");
+            return ServerResponse.createBySuccessMessage("删除地址成功");
         }
-        return ServerResponse.createByError("删除地址失败");
+        return ServerResponse.createByErrorMessage("删除地址失败");
     }
 
     public ServerResponse<String> updateShippingInfo(Shipping shipping){
         int result = shippingMapper.updateByPrimaryKeySelective(shipping);
         if(result >0){
-            return ServerResponse.createBySuccess("更新地址成功");
+            return ServerResponse.createBySuccessMessage("更新地址成功");
         }
-        return ServerResponse.createByError("更新地址失败");
+        return ServerResponse.createByErrorMessage("更新地址失败");
     }
 
     public ServerResponse<Shipping> viewShipping(int shippingId){
@@ -45,7 +45,7 @@ public class ShippingServiceImpl implements IShippingService {
         if(shipping != null){
             return ServerResponse.createBySuccess(shipping);
         }
-        return ServerResponse.createByError("没有找到该收货地址");
+        return ServerResponse.createByErrorMessage("没有找到该收货地址");
     }
 
 }
