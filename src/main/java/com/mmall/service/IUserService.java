@@ -72,4 +72,11 @@ public interface IUserService {
      * @return
      */
     ServerResponse<String> updataUserInfo(User user);
+
+    /**
+     * 登录状态下获取用户信息
+     * @param userId
+     * @return
+     */
+    ServerResponse<User> getInfomation(int userId);
 }

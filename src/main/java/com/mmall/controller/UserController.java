@@ -92,10 +92,28 @@ public class UserController {
         Object obj = session.getAttribute(Const.CURRENT_USER);
         User user = null;
         if(obj == null){
-            return ServerResponse.createByErrorCodeMessage(ResponseCode.NEED_LOGIN.getCode(),"用户未登录,无法获取当前用户信息");
+            return ServerResponse.createByError(ResponseCode.NEED_LOGIN.getCode(),"用户未登录,无法获取当前用户信息");
         }
         user = (User)obj;
         return ServerResponse.createBySuccess(user);
+    }
+
+    /**
+     * 用户登录状态下获取用户信息，并强制登录
+     * @param session
+     * @return
+     */
+    @RequestMapping(value="get_information.do",method = RequestMethod.POST)
+    @ResponseBody
+    private ServerResponse<User> getInformation(HttpSession session){
+        Object obj = session.getAttribute(Const.CURRENT_USER);
+        User user = null;
+        if(obj == null){
+            return ServerResponse.createByError(ResponseCode.NEED_LOGIN.getCode(),"用户未登录,无法获取当前用户信息");
+        }
+        user = ((User)obj);
+        session.setAttribute(Const.CURRENT_USER,user);
+        return userService.getInfomation(user.getId());
     }
 
     /**

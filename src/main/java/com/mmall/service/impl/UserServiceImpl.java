@@ -162,6 +162,7 @@ public class UserServiceImpl implements IUserService {
         }
         String token = TokenCache.getToken(TokenCache.TOKEN + username);
         if (StringUtils.isNotBlank(token) && StringUtils.equals(forgetToken,token)) {
+            passwordNew = MD5Util.MD5EncodeUtf8(passwordNew);
             int result = userMapper.resetPassword(username, passwordNew);
             if (result > 0) {
                 return ServerResponse.createBySuccessMessage("修改密码成功");
@@ -206,5 +207,15 @@ public class UserServiceImpl implements IUserService {
             return ServerResponse.createBySuccessMessage("更新个人信息成功");
         }
         return ServerResponse.createByErrorMessage("服务器内部错误");
+    }
+
+    /**
+     * 登录状态下获取用户信息
+     * @param userId
+     * @return
+     */
+    public ServerResponse<User> getInfomation(int userId){
+        User user = userMapper.selectByPrimaryKey(userId);
+        return ServerResponse.createBySuccess(user);
     }
 }
