@@ -7,6 +7,7 @@ import com.mmall.service.ICategoryService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Set;
 
 /**
@@ -81,7 +82,7 @@ public class CategoryServiceImpl implements ICategoryService {
      * @return
      */
     @Override
-    public void getDeepCateory(int categoryId,Set<Integer> categoryIds) {
+    public void getDeepCateory(int categoryId,List<Integer> categoryIds) {
         Set<Integer> categoryIdsTemp = categoryMapper.selectDeepCategoryId(categoryId);
         if(categoryIdsTemp == null || categoryIdsTemp.size() == 0){
             return;

@@ -7,7 +7,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
-
 import java.io.File;
 import java.io.IOException;
 import java.util.List;
@@ -27,7 +26,7 @@ public class FileServiceImpl implements IFileService {
         String fileName = multipartFile.getOriginalFilename();
         //获取文件的类型，后缀名
         String suffix = fileName.substring(fileName.lastIndexOf('.')+1);
-        String targetFileName = (UUID.randomUUID()+fileName)+"."+suffix;
+        String targetFileName = UUID.randomUUID()+"."+suffix;
         logger.info("上传的文件名称{},新名称{},文件类型{},文件保存本地路径{}",fileName,targetFileName,suffix,path);
         File fileDir = new File(path);
         if(!fileDir.exists()) {

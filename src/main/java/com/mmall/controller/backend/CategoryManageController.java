@@ -1,5 +1,6 @@
 package com.mmall.controller.backend;
 
+import com.google.common.collect.Lists;
 import com.mmall.common.Const;
 import com.mmall.common.ResponseCode;
 import com.mmall.common.ServerResponse;
@@ -13,6 +14,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import javax.servlet.http.HttpSession;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 /**
@@ -20,7 +22,7 @@ import java.util.Set;
  */
 @Controller
 @RequestMapping("/manage/category/")
-public class CategoryController {
+public class CategoryManageController {
 
     @Autowired
     private ICategoryService categoryService;
@@ -51,8 +53,8 @@ public class CategoryController {
 
     @RequestMapping(value = "get_deep_category.do", method = RequestMethod.GET)
     @ResponseBody
-    private ServerResponse<Set<Integer>> getDeepCateory(Integer categoryId) {
-        Set<Integer> categoryIds = new HashSet<Integer>();
+    private ServerResponse<List<Integer>> getDeepCateory(Integer categoryId) {
+        List<Integer> categoryIds = Lists.newArrayList();
         categoryIds.add(categoryId);
         categoryService.getDeepCateory(categoryId,categoryIds);
         if(categoryIds.size() == 0){

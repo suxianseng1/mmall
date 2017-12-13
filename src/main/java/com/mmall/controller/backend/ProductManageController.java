@@ -8,6 +8,7 @@ import com.mmall.dao.ProductMapper;
 import com.mmall.pojo.Product;
 import com.mmall.service.IFileService;
 import com.mmall.service.IProductService;
+import com.mmall.util.PathUtil;
 import com.mmall.util.PropertiesUtil;
 import com.mmall.vo.ProductDetailVo;
 import com.sun.deploy.net.HttpResponse;
@@ -23,6 +24,7 @@ import org.springframework.web.multipart.MultipartFile;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.io.File;
 import java.net.MalformedURLException;
 import java.util.Map;
 
@@ -31,7 +33,7 @@ import java.util.Map;
  */
 @Controller
 @RequestMapping("/manage/product/")
-public class ProductController {
+public class ProductManageController {
 
     @Autowired
     private IFileService fileService;
@@ -168,7 +170,7 @@ public class ProductController {
         String path = request.getSession().getServletContext().getRealPath("upload");
         String fileName = fileService.upload(file, path);
         if (StringUtils.isNotBlank(fileName)) {
-            String url = PropertiesUtil.getProperty("ftp.server.http.prefix") + fileName;
+            String url = PathUtil.getFTPImgPath(fileName);
             map.put("msg", "上传成功");
             map.put("url", url);
             map.put("uri", fileName);
@@ -177,5 +179,4 @@ public class ProductController {
             return ServerResponse.createByErrorMessage("上传失败");
         }
     }
-
 }

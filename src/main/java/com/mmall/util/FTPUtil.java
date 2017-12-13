@@ -33,6 +33,7 @@ public class FTPUtil {
                 ftpClient.changeWorkingDirectory(remotePath);
                 ftpClient.setBufferSize(1024);
                 ftpClient.setControlEncoding("UTF-8");
+                ftpClient.enterLocalPassiveMode();
                 ftpClient.setFileType(FTP.BINARY_FILE_TYPE);
                 for (File fileItem : fileList) {
                     is = new FileInputStream(fileItem);
@@ -51,10 +52,23 @@ public class FTPUtil {
         return false;
     }
 
+    public static void main(String[] args){
+        FTPClient ftpClient = new FTPClient();
+        try {
+            ftpClient.connect(ftpIp);
+            ftpClient.login(ftpUser, ftpPass);
+            System.out.println("连接成功");
+        } catch (IOException e) {
+            logger.error("FTP服务器连接失败");
+            e.printStackTrace();
+        }
+    }
+
     private boolean connec(String ip, String username, String pwd) {
         ftpClient = new FTPClient();
         try {
-            ftpClient.login(ip, username, pwd);
+            ftpClient.connect(ip);
+            ftpClient.login(username, pwd);
             return true;
         } catch (IOException e) {
             logger.error("FTP服务器连接失败");

@@ -3,6 +3,7 @@ package com.mmall.service;
 import com.mmall.common.ServerResponse;
 import com.mmall.pojo.Category;
 
+import java.util.List;
 import java.util.Set;
 
 /**
@@ -17,5 +18,5 @@ public interface ICategoryService {
     ServerResponse<String> setCategoryName(String categoryName,int categoryId);
 
 
-    void getDeepCateory(int categoryId,Set<Integer> categoryIds);
+    void getDeepCateory(int categoryId,List<Integer> categoryIds);
 }
