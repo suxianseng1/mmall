@@ -84,7 +84,6 @@ public class CartServiceImpl implements ICartService {
             return ServerResponse.createByErrorMessage("选中失败");
         }
         return ServerResponse.createBySuccess(this.getCartVo(userId));
-
     }
 
     @Override
@@ -118,13 +117,12 @@ public class CartServiceImpl implements ICartService {
             for (Integer id : ids) {
                 Cart cart = new Cart();
                 cart.setId(id);
-                cart.setChecked(Const.Cart.CHECKED);
+                cart.setChecked(check);
                 cartMapper.updateByPrimaryKeySelective(cart);
             }
         }
         return ServerResponse.createBySuccess(this.getCartVo(userId));
     }
-
 
     /**
      * @param userId
@@ -133,11 +131,12 @@ public class CartServiceImpl implements ICartService {
     private CartVo getCartVo(Integer userId) {
         List<Cart> cartList = cartMapper.selectListByUserId(userId);
         CartVo cartVo = new CartVo();
-        CartProductVo cartProductVo = new CartProductVo();
+        CartProductVo cartProductVo;
         BigDecimal totalPrice = new BigDecimal("0");
         List<CartProductVo> cartProductVoList = Lists.newArrayList();
         if (cartList != null) {
             for (Cart cart : cartList) {
+                cartProductVo = new CartProductVo();
                 Product product = productMapper.selectByPrimaryKey(cart.getProductId());
                 // 在这里把两个对象的值 合并到 CartProductVo 中
                 setPropertyToCartProductVo(cartProductVo, cart, product);
@@ -158,8 +157,11 @@ public class CartServiceImpl implements ICartService {
                 }
                 // 计算并保存 购物车中被选中商品的全部价钱
                 if (cart.getChecked() == Const.Cart.CHECKED) {
-                    BigDecimal tempPrice = BigDecimalUtil.mul(Double.valueOf(product.getPrice().doubleValue()), cart.getQuantity());
+                    cartProductVo.setProductChecked(Const.Cart.CHECKED);
+                    BigDecimal tempPrice = BigDecimalUtil.mul(product.getPrice().doubleValue(), cart.getQuantity());
                     totalPrice = BigDecimalUtil.add(totalPrice.doubleValue(), tempPrice.doubleValue());
+                } else {
+                    cartProductVo.setProductChecked(Const.Cart.UN_CHECKED);
                 }
                 cartProductVoList.add(cartProductVo);
             }

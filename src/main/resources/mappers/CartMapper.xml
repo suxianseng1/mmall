@@ -136,7 +136,7 @@
     SELECT  COUNT(1) FROM mmall_cart WHERE user_id=#{userId}
   </select>
 
-  <select id="selectAllIdByUserId" parameterType="int" resultType="list">
+  <select id="selectAllIdByUserId" parameterType="int" resultType="int">
     SELECT id from mmall_cart WHERE user_id=#{userId}
   </select>
 </mapper>

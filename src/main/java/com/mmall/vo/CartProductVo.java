@@ -18,13 +18,22 @@ public class CartProductVo {
     private Integer productStatus;
     private Integer productStock;
     private String limitQuantity;
-
-    public Integer getId() {
-        return id;
-    }
+    private Integer productChecked;//此商品是否勾选
 
     public void setId(Integer id) {
         this.id = id;
+    }
+
+    public Integer getProductChecked() {
+        return productChecked;
+    }
+
+    public void setProductChecked(Integer productChecked) {
+        this.productChecked = productChecked;
+    }
+
+    public Integer getId() {
+        return id;
     }
 
     public Integer getUserId() {
