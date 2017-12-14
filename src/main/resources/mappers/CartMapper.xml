@@ -92,9 +92,6 @@
       <if test="checked != null" >
         checked = #{checked,jdbcType=INTEGER},
       </if>
-      <if test="createTime != null" >
-        create_time = #{createTime,jdbcType=TIMESTAMP},
-      </if>
         update_time = now()
     </set>
     where id = #{id,jdbcType=INTEGER}
@@ -105,8 +102,41 @@
       product_id = #{productId,jdbcType=INTEGER},
       quantity = #{quantity,jdbcType=INTEGER},
       checked = #{checked,jdbcType=INTEGER},
-      create_time = #{createTime,jdbcType=TIMESTAMP},
       update_time = now()
     where id = #{id,jdbcType=INTEGER}
   </update>
+
+  <select id="selectListByUserId" resultMap="BaseResultMap" parameterType="int" >
+    SELECT
+    <include refid="Base_Column_List" />
+    FROM  mmall_cart
+    WHERE user_id = #{userId}
+  </select>
+
+  <select id="checkAllChecked" parameterType="int" resultType="int">
+    SELECT COUNT(1) FROM mmall_cart WHERE checked = 0 AND user_id = #{userId}
+  </select>
+
+  <select id="selectCartByUserIdAndProductId" resultMap="BaseResultMap" parameterType="map">
+    SELECT
+    <include refid="Base_Column_List" />
+    FROM  mmall_cart
+    WHERE user_id=#{userId} AND product_id=#{productId}
+  </select>
+
+  <delete id="deleteByUserIdAndProductId" parameterType="map">
+    DELETE FROM mmall_cart
+    WHERE user_id=#{userId}
+    AND product_id IN
+    <foreach collection="productIds" separator="," item="item" open="(" close=")">
+      #{item}
+    </foreach>
+  </delete>
+  <select id="selectCountByUserId" resultType="int" parameterType="int">
+    SELECT  COUNT(1) FROM mmall_cart WHERE user_id=#{userId}
+  </select>
+
+  <select id="selectAllIdByUserId" parameterType="int" resultType="list">
+    SELECT id from mmall_cart WHERE user_id=#{userId}
+  </select>
 </mapper>

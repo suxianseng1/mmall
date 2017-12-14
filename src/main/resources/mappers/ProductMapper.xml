@@ -193,4 +193,15 @@
         </if>
     </select>
 
+    <!--<select id="selectByProductIds" resultMap="BaseResultMap" parameterType="list">
+        SELECT
+        <include refid="Base_Column_List"/>
+        FROM mmall_product
+        WHERE status = 1
+        and id IN
+        <foreach collection="productIds" open="(" close=")" item="item" separator=",">
+            #{item}
+        </foreach>
+    </select>-->
+
 </mapper>
