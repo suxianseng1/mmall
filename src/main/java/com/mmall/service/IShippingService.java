@@ -1,5 +1,6 @@
 package com.mmall.service;
 
+import com.github.pagehelper.PageInfo;
 import com.mmall.common.ServerResponse;
 import com.mmall.pojo.Shipping;
 
@@ -15,4 +16,6 @@ public interface IShippingService {
     ServerResponse<String> updateShippingInfo(Shipping shipping);
 
     ServerResponse<Shipping> viewShipping(int shippingId);
+
+    ServerResponse<PageInfo> getList(int userId, Integer pageNum, Integer pageSize);
 }

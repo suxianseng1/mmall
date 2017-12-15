@@ -3,6 +3,8 @@ package com.mmall.dao;
 import com.mmall.pojo.Shipping;
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
+
 @Repository
 public interface ShippingMapper {
     int deleteByPrimaryKey(Integer id);
@@ -18,4 +20,5 @@ public interface ShippingMapper {
     int updateByPrimaryKey(Shipping record);
 
 
+    List<Shipping> selectListByUserId(int userId);
 }

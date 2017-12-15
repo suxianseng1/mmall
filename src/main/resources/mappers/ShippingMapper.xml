@@ -158,4 +158,12 @@
       update_time = now()
     where id = #{id,jdbcType=INTEGER}
   </update>
+
+  <select id="selectListByUserId" resultMap="BaseResultMap" parameterType="int">
+    SELECT
+    <include refid="Base_Column_List" />
+    FROM
+    mmall_shipping
+    WHERE user_id = #{userId}
+  </select>
 </mapper>

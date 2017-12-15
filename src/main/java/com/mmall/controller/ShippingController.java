@@ -1,5 +1,6 @@
 package com.mmall.controller;
 
+import com.github.pagehelper.PageInfo;
 import com.mmall.common.Const;
 import com.mmall.common.ServerResponse;
 import com.mmall.pojo.Shipping;
@@ -9,6 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import javax.servlet.http.HttpSession;
@@ -35,19 +37,19 @@ public class ShippingController {
         return shippingService.addShipping(shipping);
     }
 
-    @RequestMapping(value = "del.do", method = RequestMethod.POST)
+    @RequestMapping(value = "del.do")
     @ResponseBody
     private ServerResponse<String> delShipping(Integer shippingId){
         return shippingService.delShipping(shippingId);
     }
 
-    @RequestMapping(value = "update.do", method = RequestMethod.GET)
+    @RequestMapping(value = "update.do")
     @ResponseBody
     private ServerResponse<String> updateShippingInfo(Shipping shipping){
         return shippingService.updateShippingInfo(shipping);
     }
 
-    @RequestMapping(value = "select.do", method = RequestMethod.GET)
+    @RequestMapping(value = "select.do")
     @ResponseBody
     private ServerResponse<Shipping> viewShipping(Integer shippingId,HttpSession session){
         Object obj = session.getAttribute(Const.CURRENT_USER);
@@ -56,4 +58,16 @@ public class ShippingController {
         }
         return shippingService.viewShipping(shippingId);
     }
+
+    @RequestMapping(value = "list.do")
+    @ResponseBody
+    private ServerResponse<PageInfo> list(HttpSession session, @RequestParam(value="pageNum",defaultValue = "1",required = false) Integer pageNum, @RequestParam(value="pageSize",defaultValue = "10",required = false) Integer pageSize){
+        Object obj = session.getAttribute(Const.CURRENT_USER);
+        if (obj == null) {
+            return ServerResponse.createByErrorMessage("请登录之后查询");
+        }
+        int userId = ((User)obj).getId();
+        return shippingService.getList(userId,pageNum,pageSize);
+    }
+
 }
