@@ -8,6 +8,7 @@ import com.mmall.pojo.Shipping;
 import com.mmall.service.IShippingService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -26,6 +27,7 @@ public class ShippingServiceImpl implements IShippingService {
      * @param shipping
      * @return
      */
+    @Transactional
     public ServerResponse<Integer> addShipping(Shipping shipping) {
         int id = shippingMapper.insertSelective(shipping);
         if (id > 0) {
@@ -40,6 +42,7 @@ public class ShippingServiceImpl implements IShippingService {
      * @param shippingId
      * @return
      */
+    @Transactional
     public ServerResponse<String> delShipping(int shippingId) {
         int result = shippingMapper.deleteByPrimaryKey(shippingId);
         if (result > 0) {
@@ -54,6 +57,7 @@ public class ShippingServiceImpl implements IShippingService {
      * @param shipping
      * @return
      */
+    @Transactional
     public ServerResponse<String> updateShippingInfo(Shipping shipping) {
         int result = shippingMapper.updateByPrimaryKeySelective(shipping);
         if (result > 0) {

@@ -6,6 +6,8 @@ import com.mmall.pojo.Category;
 import com.mmall.service.ICategoryService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
 import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
@@ -40,6 +42,7 @@ public class CategoryServiceImpl implements ICategoryService {
      * @return
      */
     @Override
+    @Transactional
     public ServerResponse<String> addCategory(int parentId, String categoryName) {
         if(checkCategoryNameAndId(categoryName,parentId)){
             return ServerResponse.createByErrorMessage("此类别下已有该类别名，请更换类别名再进行添加");
@@ -61,6 +64,7 @@ public class CategoryServiceImpl implements ICategoryService {
      * @return
      */
     @Override
+    @Transactional
     public ServerResponse<String> setCategoryName(String categoryName, int categoryId) {
         Category category = new Category();
         category.setId(categoryId);

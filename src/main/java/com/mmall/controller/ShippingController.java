@@ -29,9 +29,6 @@ public class ShippingController {
     @ResponseBody
     private ServerResponse<Integer> addShipping(Shipping shipping, HttpSession session) {
         Object obj = session.getAttribute(Const.CURRENT_USER);
-        if (obj == null) {
-            return ServerResponse.createByErrorMessage("用户未登录");
-        }
         int id = ((User) obj).getId();
         shipping.setUserId(id);
         return shippingService.addShipping(shipping);
@@ -52,10 +49,6 @@ public class ShippingController {
     @RequestMapping(value = "select.do")
     @ResponseBody
     private ServerResponse<Shipping> viewShipping(Integer shippingId,HttpSession session){
-        Object obj = session.getAttribute(Const.CURRENT_USER);
-        if (obj == null) {
-            return ServerResponse.createByErrorMessage("请登录之后查询");
-        }
         return shippingService.viewShipping(shippingId);
     }
 
@@ -63,9 +56,6 @@ public class ShippingController {
     @ResponseBody
     private ServerResponse<PageInfo> list(HttpSession session, @RequestParam(value="pageNum",defaultValue = "1",required = false) Integer pageNum, @RequestParam(value="pageSize",defaultValue = "10",required = false) Integer pageSize){
         Object obj = session.getAttribute(Const.CURRENT_USER);
-        if (obj == null) {
-            return ServerResponse.createByErrorMessage("请登录之后查询");
-        }
         int userId = ((User)obj).getId();
         return shippingService.getList(userId,pageNum,pageSize);
     }

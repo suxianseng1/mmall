@@ -10,6 +10,7 @@ import com.mmall.util.MD5Util;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.UUID;
 
@@ -51,6 +52,7 @@ public class UserServiceImpl implements IUserService {
      * @return
      */
     @Override
+    @Transactional
     public ServerResponse<String> register(User user) {
         //检查用户名是否已经存在,保证用户名唯一
         ServerResponse checkUsernameValid = this.checkValid(user.getUsername(), Const.USERNAME);
@@ -152,6 +154,7 @@ public class UserServiceImpl implements IUserService {
      * @return
      */
     @Override
+    @Transactional
     public ServerResponse<String> forgetResetPassword(String username, String passwordNew, String forgetToken) {
         if(StringUtils.isBlank(forgetToken)){
             return ServerResponse.createByErrorMessage("参数错误，Token需要传递");
@@ -181,6 +184,7 @@ public class UserServiceImpl implements IUserService {
      * @return
      */
     @Override
+    @Transactional
     public ServerResponse<String> resetPassword(String username, String passwordOld, String passwordNew) {
         passwordOld = MD5Util.MD5EncodeUtf8(passwordOld);
         passwordNew = MD5Util.MD5EncodeUtf8(passwordNew);
@@ -197,6 +201,7 @@ public class UserServiceImpl implements IUserService {
      * @return
      */
     @Override
+    @Transactional
     public ServerResponse<String> updataUserInfo(User user) {
         int checkEmail = userMapper.checkEmailByUserId(user.getEmail(),user.getId());
         if(checkEmail >0){

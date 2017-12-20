@@ -22,5 +22,7 @@ public interface ProductMapper {
 
     List<Product> selectBykeywordAndProductIds(@Param("keyWord")String keyWord,@Param("categoryIds")List<Integer> categoryIds);
 
+    /*List<Product> selectByUserId(Integer userId);*/
+
     /*List<Product> selectByProductIds(List<Integer> categoryIds);*/
 }

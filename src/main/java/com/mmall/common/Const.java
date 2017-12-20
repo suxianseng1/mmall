@@ -114,10 +114,10 @@ public class Const {
         }
 
 
-        public static PaymentTypeEnum codeOf(int code){
+        public static String codeOf(int code){
             for(PaymentTypeEnum paymentTypeEnum : values()){
                 if(paymentTypeEnum.getCode() == code){
-                    return paymentTypeEnum;
+                    return paymentTypeEnum.getValue();
                 }
             }
             throw new RuntimeException("么有找到对应的枚举");

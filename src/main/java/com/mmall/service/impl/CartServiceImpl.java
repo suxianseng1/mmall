@@ -14,6 +14,7 @@ import com.mmall.vo.CartProductVo;
 import com.mmall.vo.CartVo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
 import java.util.List;
@@ -35,7 +36,15 @@ public class CartServiceImpl implements ICartService {
         return ServerResponse.createBySuccess(getCartVo(userId));
     }
 
+    /**
+     * 添加商品到购物车
+     * @param userId 用户ID
+     * @param productId 商品ID
+     * @param count 商品数量
+     * @return
+     */
     @Override
+    @Transactional
     public ServerResponse<CartVo> add(Integer userId, Integer productId, Integer count) {
         Cart cart = cartMapper.selectCartByUserIdAndProductId(userId, productId);
         // 如果存在就更新，不存在就添加插入
@@ -56,7 +65,14 @@ public class CartServiceImpl implements ICartService {
         return ServerResponse.createBySuccess(this.getCartVo(userId));
     }
 
+    /**
+     * 删除购物车商品
+     * @param userId
+     * @param productIds
+     * @return
+     */
     @Override
+    @Transactional
     public ServerResponse<CartVo> delete(Integer userId, String productIds) {
         String[] ids = productIds.split(",");
         List<Integer> idList = Lists.newArrayList();
@@ -71,6 +87,7 @@ public class CartServiceImpl implements ICartService {
     }
 
     @Override
+    @Transactional
     public ServerResponse<CartVo> cancelCheck(Integer userId, Integer productId) {
         Cart cart = cartMapper.selectCartByUserIdAndProductId(userId, productId);
         if (cart == null) {
@@ -87,6 +104,7 @@ public class CartServiceImpl implements ICartService {
     }
 
     @Override
+    @Transactional
     public ServerResponse<CartVo> checked(Integer userId, Integer productId) {
         Cart cart = cartMapper.selectCartByUserIdAndProductId(userId, productId);
         if (cart == null) {
@@ -111,6 +129,7 @@ public class CartServiceImpl implements ICartService {
 
 
     @Override
+    @Transactional
     public ServerResponse<CartVo> checkedOrUnCheckedAll(Integer userId,Integer check) {
         List<Integer> ids = cartMapper.selectAllIdByUserId(userId);
         if (ids != null) {

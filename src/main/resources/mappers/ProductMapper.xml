@@ -174,7 +174,6 @@
                 and name like #{productName}
             </if>
         </where>
-
     </select>
 
     <select id="selectBykeywordAndProductIds" resultMap="BaseResultMap" parameterType="map">
@@ -192,6 +191,13 @@
             </foreach>
         </if>
     </select>
+
+    <!--<select id="selectByUserId" resultMap="BaseResultMap" parameterType="int">
+        SELECT
+        <include refid="Base_Column_List"/>
+        FROM mmall_product
+        WHERE status = 1 AND checked=1 AND user_id=#{userId}
+    </select>-->
 
     <!--<select id="selectByProductIds" resultMap="BaseResultMap" parameterType="list">
         SELECT

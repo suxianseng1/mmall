@@ -22,18 +22,13 @@ public class UserManageController {
     @Autowired
     private IUserService userService;
 
-    @RequestMapping(value="/login.do",method = RequestMethod.POST)
+    @RequestMapping(value = "/login.do", method = RequestMethod.POST)
     @ResponseBody
-    private ServerResponse<User> login(String username, String password, HttpSession session){
+    private ServerResponse<User> login(String username, String password, HttpSession session) {
         ServerResponse<User> serverResponse = userService.checkLogin(username, password);
         User user = serverResponse.getData();
-        if(serverResponse.isSuccess()){
-            session.setAttribute(Const.CURRENT_USER,serverResponse.getData());
-            if(user.getRole()== Const.Role.ROLE_ADMIN){
-                return ServerResponse.createBySuccess("登陆成功",user);
-            } else {
-                return ServerResponse.createByErrorMessage("用户没有权限进入");
-            }
+        if (serverResponse.isSuccess()) {
+            return ServerResponse.createBySuccess("登陆成功", user);
         } else {
             return ServerResponse.createByErrorMessage("账号或者密码错误");
         }

@@ -30,10 +30,6 @@ public class CategoryManageController {
     @RequestMapping(value = "get_category.do", method = RequestMethod.GET)
     @ResponseBody
     private ServerResponse<Set<Category>> get_category(HttpSession session, @RequestParam(value = "categoryId", defaultValue = "0") int categoryId) {
-        Object obj = session.getAttribute(Const.CURRENT_USER);
-        if (obj == null) {
-            return ServerResponse.createByError(ResponseCode.NEED_LOGIN.getCode(), "用户未登录,请登录");
-        }
         return categoryService.getCategory(categoryId);
     }
 

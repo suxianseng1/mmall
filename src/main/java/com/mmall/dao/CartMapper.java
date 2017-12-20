@@ -29,4 +29,8 @@ public interface CartMapper {
     int selectCountByUserId(Integer userId);
 
     List<Integer> selectAllIdByUserId(Integer userId);
+
+    List<Cart> selectByUserId(Integer userId);
+
+    int deleteBatch(@Param("productIds")List<Integer> productIds,@Param("userId") Integer userId);
 }
