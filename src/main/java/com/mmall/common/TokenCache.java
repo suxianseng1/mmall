@@ -9,7 +9,7 @@ import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 
 /**
- * Created by Administrator on 2017/12/9.
+ * Created by SMY on 2017/12/9.
  */
 public class TokenCache {
 

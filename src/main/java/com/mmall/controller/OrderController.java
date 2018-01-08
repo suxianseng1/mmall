@@ -97,32 +97,40 @@ public class OrderController {
     @RequestMapping("alipay_callback.do")
     @ResponseBody
     private ServerResponse callBack(HttpServletRequest request) throws AlipayApiException {
+        // 取出支付宝回调携带的所有参数并进行转换，数组转换为字符串
         Map<String, String[]> tempParams = request.getParameterMap();
+        //  参数存放 Map
         Map<String, String> requestParams = Maps.newHashMap();
         for (Iterator<String> iterator = tempParams.keySet().iterator(); iterator.hasNext(); ) {
             String key = iterator.next();
             String[] strs = tempParams.get(key);
             String str = "";
+            // 这里如果数组的长度是1，说明只有一个，直接赋值就好，如果超过一个，后面加一个逗号来隔离
             for (int i = 0; i < strs.length; i++) {
                 str = strs.length - 1 == i ? str + strs[i] : str + strs[i] + ",";
             }
             requestParams.put(key, str);
         }
+        // 去除sign_type
         requestParams.remove("sign_type");
         try {
+            // 验证签名
             boolean result = AlipaySignature.rsaCheckV2(requestParams, Configs.getPublicKey(), "utf-8", Configs.getSignType());
             if (!result) {
-                return ServerResponse.createByErrorMessage("非法请求,验证不通过,再恶意请求我就报警找网警了");
+                return ServerResponse.createByErrorMessage("非法请求,再恶意请求我就报警找网警了");
             }
         } catch (AlipayApiException e) {
             logger.error("支付宝回调验证异常", e);
             e.printStackTrace();
             throw e;
         }
+        // 调用Service 方法进行处理
         ServerResponse serverResponse = orderService.alipayCallBack(requestParams);
-        if (serverResponse.isSuccess()) {
+        if (!serverResponse.isSuccess()) {
+            logger.error("OrderController.callBack()","数据操作失败");
             return ServerResponse.createBySuccess(Const.AlipayCallback.RESPONSE_FAILED);
         }
+        logger.info("支付宝支付回调完成，没有异常");
         return ServerResponse.createBySuccess(Const.AlipayCallback.RESPONSE_SUCCESS);
     }
 

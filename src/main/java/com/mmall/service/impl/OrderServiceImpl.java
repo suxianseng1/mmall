@@ -117,7 +117,7 @@ public class OrderServiceImpl implements IOrderService {
             logger.error("插入订单失败");
             return ServerResponse.createByErrorMessage("插入订单失败");
         }
-        result = cartMapper.deleteBatch(productIds,userId);
+        result = cartMapper.deleteBatch(productIds, userId);
         if (result <= 0) {
             logger.error("清理购物车失败");
             return ServerResponse.createByErrorMessage("清理购物车失败");
@@ -132,15 +132,16 @@ public class OrderServiceImpl implements IOrderService {
 
     /**
      * 获取订单详情
-     * @param userId 用户ID
+     *
+     * @param userId  用户ID
      * @param orderNo 订单号
      * @return
      */
     @Override
-    public ServerResponse<OrderProductVo> getOrderCartProduct(Integer userId,Long orderNo) {
-        List<OrderItem> orderItemList = orderItemMapper.selectListByUserIdAndOrderNo(orderNo,userId);
-        if(orderItemList == null || orderItemList.size() == 0){
-            logger.info("该订单没有商品{}",orderNo);
+    public ServerResponse<OrderProductVo> getOrderCartProduct(Integer userId, Long orderNo) {
+        List<OrderItem> orderItemList = orderItemMapper.selectListByUserIdAndOrderNo(orderNo, userId);
+        if (orderItemList == null || orderItemList.size() == 0) {
+            logger.info("该订单没有商品{}", orderNo);
             return ServerResponse.createByErrorMessage("该订单没有商品");
         }
         List<OrderItemVo> orderItemVoList = this.parseOrderItemVo(orderItemList);
@@ -154,38 +155,41 @@ public class OrderServiceImpl implements IOrderService {
 
     /**
      * 获取订单集合
+     *
      * @param pageSize 显示条数
-     * @param pageNum 页码
-     * @param userId 用户ID
+     * @param pageNum  页码
+     * @param userId   用户ID
      * @return
      */
     @Override
     public ServerResponse<PageInfo> getList(Integer pageSize, Integer pageNum, Integer userId) {
-        PageHelper.startPage(pageNum,pageSize);
+        PageHelper.startPage(pageNum, pageSize);
         List<Order> orderList = orderMapper.selectOrderByUserId(userId);
         PageInfo pageInfo = new PageInfo(orderList);
-        List<OrderVo> orderVoList = parseOrderVoList(orderList,userId);
+        List<OrderVo> orderVoList = parseOrderVoList(orderList, userId);
         pageInfo.setList(orderVoList);
         return ServerResponse.createBySuccess(pageInfo);
     }
 
     /**
-     *  获取订单
+     * 获取订单
+     *
      * @param orderNo 订单号
-     * @param userId 用户ID
+     * @param userId  用户ID
      * @return
      */
     @Override
     public ServerResponse<OrderVo> getDetail(Long orderNo, Integer userId) {
-        List<OrderItem> orderItemList = orderItemMapper.selectListByUserIdAndOrderNo(orderNo,userId);
+        List<OrderItem> orderItemList = orderItemMapper.selectListByUserIdAndOrderNo(orderNo, userId);
         List<OrderItemVo> orderItemVoList = this.parseOrderItemVo(orderItemList);
-        Order order= orderMapper.selectOrderByOrderNo(orderNo);
-        OrderVo orderVo = this.parseOrderVo(order,orderItemVoList);
+        Order order = orderMapper.selectOrderByOrderNo(orderNo);
+        OrderVo orderVo = this.parseOrderVo(order, orderItemVoList);
         return ServerResponse.createBySuccess(orderVo);
     }
 
     /**
-     *  取消订单
+     * 取消订单
+     *
      * @param orderNo
      * @return
      */
@@ -196,7 +200,7 @@ public class OrderServiceImpl implements IOrderService {
         Order order = orderMapper.selectOrderByOrderNo(orderNo);
         order.setStatus(code);
         int result = orderMapper.updateByPrimaryKeySelective(order);
-        if(result <= 0){
+        if (result <= 0) {
             return ServerResponse.createByErrorMessage("取消订单失败");
         }
         return ServerResponse.createBySuccess();
@@ -204,37 +208,40 @@ public class OrderServiceImpl implements IOrderService {
 
     /**
      * 管理员 获取所有订单
+     *
      * @param pageSize
      * @param pageNum
      * @return
      */
     @Override
     public ServerResponse<PageInfo> manageList(Integer pageSize, Integer pageNum) {
-        PageHelper.startPage(pageNum,pageSize);
+        PageHelper.startPage(pageNum, pageSize);
         List<Order> orderList = orderMapper.selectAll();
         PageInfo pageInfo = new PageInfo(orderList);
-        List<OrderVo> orderVoList = parseOrderVoList(orderList,null);
+        List<OrderVo> orderVoList = parseOrderVoList(orderList, null);
         pageInfo.setList(orderVoList);
         return ServerResponse.createBySuccess(pageInfo);
     }
 
     /**
      * 管理员 根据订单号获得订单信息
+     *
      * @param orderNo
      * @return
      */
     @Override
     public ServerResponse<OrderVo> searchByOrderNo(Long orderNo) {
-        List<OrderItem> orderItemList = orderItemMapper.selectListByUserIdAndOrderNo(orderNo,null);
+        List<OrderItem> orderItemList = orderItemMapper.selectListByUserIdAndOrderNo(orderNo, null);
         List<OrderItemVo> orderItemVoList = this.parseOrderItemVo(orderItemList);
-        Order order= orderMapper.selectOrderByOrderNo(orderNo);
-        OrderVo orderVo = this.parseOrderVo(order,orderItemVoList);
+        Order order = orderMapper.selectOrderByOrderNo(orderNo);
+        OrderVo orderVo = this.parseOrderVo(order, orderItemVoList);
         return ServerResponse.createBySuccess(orderVo);
     }
 
     /**
      * 订单发货
      * 设置 订单状态为 发货状态
+     *
      * @param orderNo
      * @return
      */
@@ -245,7 +252,7 @@ public class OrderServiceImpl implements IOrderService {
         order.setStatus(Const.OrderStatusEnum.SHIPPED.getCode());
         order.setSendTime(new Date());
         int result = orderMapper.updateByPrimaryKeySelective(order);
-        if(result <= 0){
+        if (result <= 0) {
             return ServerResponse.createByErrorMessage("设置发货失败");
         }
         return ServerResponse.createBySuccess("设置发货成功");
@@ -254,29 +261,31 @@ public class OrderServiceImpl implements IOrderService {
 
     /**
      * 获得OrderVoList， 如果传入userId则是普通用户，否则是管理员
+     *
      * @param orderList
      * @param userId
      * @return List<OrderVo>
      */
-    private List<OrderVo> parseOrderVoList(List<Order> orderList,Integer userId){
+    private List<OrderVo> parseOrderVoList(List<Order> orderList, Integer userId) {
         List<OrderVo> orderVoList = Lists.newArrayList();
-        for(Order order : orderList){
+        for (Order order : orderList) {
             long orderNo = order.getOrderNo();
             List<OrderItem> orderItemList = Lists.newArrayList();
-            if(userId == null ){
-                orderItemList = orderItemMapper.selectListByUserIdAndOrderNo(orderNo,null);
+            if (userId == null) {
+                orderItemList = orderItemMapper.selectListByUserIdAndOrderNo(orderNo, null);
             } else {
-                orderItemList = orderItemMapper.selectListByUserIdAndOrderNo(orderNo,userId);
+                orderItemList = orderItemMapper.selectListByUserIdAndOrderNo(orderNo, userId);
             }
             List<OrderItemVo> orderItemVoList = this.parseOrderItemVo(orderItemList);
-            OrderVo orderVo = this.parseOrderVo(order,orderItemVoList);
+            OrderVo orderVo = this.parseOrderVo(order, orderItemVoList);
             orderVoList.add(orderVo);
         }
         return orderVoList;
     }
 
     /**
-     *  转换成OrderItem 对象
+     * 转换成OrderItem 对象
+     *
      * @param cart
      * @param userId
      * @param orderNo
@@ -330,7 +339,8 @@ public class OrderServiceImpl implements IOrderService {
     }
 
     /**
-     *  转换成OrderItemVO 集合对象
+     * 转换成OrderItemVO 集合对象
+     *
      * @param orderItems
      * @return List<OrderItemVo>
      */
@@ -353,6 +363,7 @@ public class OrderServiceImpl implements IOrderService {
 
     /**
      * 转换成OrderVo对象
+     *
      * @param order
      * @param orderItemVos
      * @return OrderVo
@@ -371,7 +382,7 @@ public class OrderServiceImpl implements IOrderService {
         orderVo.setPaymentTypeDesc(Const.PaymentTypeEnum.codeOf(order.getPaymentType()));
 
         Shipping shipping = shippingMapper.selectByPrimaryKey(order.getShippingId());
-        if(shipping != null ) {
+        if (shipping != null) {
             orderVo.setShippingVo(this.assembleShipping(shipping));
         }
         orderVo.setShippingId(shipping.getId());
@@ -384,6 +395,7 @@ public class OrderServiceImpl implements IOrderService {
 
     /**
      * 将Shipping  转换成ShippingVo对象
+     *
      * @param shipping
      * @return ShippingVo
      */
@@ -401,7 +413,8 @@ public class OrderServiceImpl implements IOrderService {
     }
 
     /**
-     *  创建Order对象
+     * 创建Order对象
+     *
      * @param userId
      * @param shippingId
      * @param payment
@@ -420,6 +433,7 @@ public class OrderServiceImpl implements IOrderService {
 
     /**
      * 获取随机订单号
+     *
      * @return
      */
     private long generatorOrderNo() {
@@ -429,10 +443,11 @@ public class OrderServiceImpl implements IOrderService {
 
 
     /**
-     * 支付宝预创建支付订单
-     * @param userId
-     * @param orderNo
-     * @param path
+     * 支付宝预创建支付订单，生成支付的二维码用户用户扫码支付
+     *
+     * @param userId  用户ID
+     * @param orderNo 订单号
+     * @param path    本地上传图片地址
      * @return
      */
     @Transactional
@@ -480,6 +495,7 @@ public class OrderServiceImpl implements IOrderService {
         // 商品明细列表，需填写购买商品详细信息，
         List<GoodsDetail> goodsDetailList = new ArrayList<GoodsDetail>();
 
+        // 添加 用户 预支付的订单中的商品
         List<OrderItem> orderItemList = orderItemMapper.selectListByUserIdAndOrderNo(orderNo, userId);
         for (OrderItem orderItem : orderItemList) {
             GoodsDetail goods1 = GoodsDetail.newInstance(orderItem.getProductId().toString(), orderItem.getProductName(),
@@ -497,26 +513,33 @@ public class OrderServiceImpl implements IOrderService {
                 .setNotifyUrl(PropertiesUtil.getProperty("alipay.callback.url"))//支付宝服务器主动通知商户服务器里指定的页面http路径,根据需要设置
                 .setGoodsDetailList(goodsDetailList);
 
+        // 创建预支付订单对象
         AlipayF2FPrecreateResult result = tradeService.tradePrecreate(builder);
         switch (result.getTradeStatus()) {
             case SUCCESS:
                 logger.info("支付宝预下单成功: )");
+                // 获取响应 Response
                 AlipayTradePrecreateResponse response = result.getResponse();
+                //  简单打印一下日志
                 dumpResponse(response);
+                // 创建本地上传图片的文件夹，不存在则创建
                 File folder = new File(path);
                 if (!folder.exists()) {
                     folder.setWritable(true);
                     folder.mkdirs();
                 }
-                // 需要修改为运行机器上的路径
+                // 需要修改为运行机器上的路径,
                 String filePath = String.format(path + "/qr-%s.png",
                         response.getOutTradeNo());
+                // %s 是一种占位符，即后面的response.getOutTradeNo() ，只是生成额随机字符串，防止重名
                 String fileName = String.format("/qr-%s.png", response.getOutTradeNo());
 
                 logger.info("filePath:" + filePath);
+                // 上传到本地服务器
                 ZxingUtils.getQRCodeImge(response.getQrCode(), 256, filePath);
                 File targetFile = new File(path, fileName);
                 try {
+                    // 上传图片到FTP服务器，上传FTP完毕之后，删除本地存储的图片
                     FTPUtil.upload(Lists.newArrayList(targetFile));
                 } catch (IOException e) {
                     logger.error("上传二维码失败", e);
@@ -543,6 +566,7 @@ public class OrderServiceImpl implements IOrderService {
 
     /**
      * 支付宝回调函数，用来确定用户有没有支付成功
+     *
      * @param params
      * @return
      */
@@ -575,6 +599,7 @@ public class OrderServiceImpl implements IOrderService {
         payInfo.setPlatformNumber(tradeNo);
         int result = payInfoMapper.insert(payInfo);
         if (result <= 0) {
+            logger.error("添加PayInfo", "该订单已支付完成，添加PayInfo失败");
             return ServerResponse.createByErrorMessage("该订单已支付完成，添加PayInfo失败");
         }
         return ServerResponse.createBySuccess();
@@ -582,7 +607,8 @@ public class OrderServiceImpl implements IOrderService {
 
     /**
      * 查询 订单状态
-     * @param userId 用户ID
+     *
+     * @param userId  用户ID
      * @param orderNo 订单号
      * @return
      */
